@@ -3,15 +3,64 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
   <script>
+    /* Crowded Cursors */
+    // see gist/488562 for similar example 
+
+    // Set up socket.io
     var socket = io.connect();
     socket.on('status', function(data) {
-      console.log(data.message);
+      console.log(data.message + " and have been assigned id " + data.clid);
     });
+
+    // Handle mouse move events
+    socket.on('move', function(data) {
+
+    });
+
+    // Set up mouse tracking
+    
+    // We don't want to run mousemove constantly,
+    // so slow it down a bit (via jeffkreeftmeijer)
+    function ratelimit(fn, ms) {
+      var last = (new Date()).getTime();
+      return (function() {
+        var now = (new Date()).getTime();
+        if(now - last > ms) {
+          last = now;
+          fn.apply(null, arguments);
+        }
+      });
+    }
+
+
+    // Send the current mouse coordinates to the server
+    $(document).mousemove(
+      ratelimit(function(e) {
+        var data = {
+          'x': e.pageX,
+          'y': e.pageY
+        }
+        socket.emit('move', data);
+      }, 500)
+    );
   </script>
-  <link href="style.css" media="screen" rel="stylesheet" type="text/css" />
+  
+  <style type="text/css">
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+    }
+
+    #mouse-canvas {
+      background: #DDD;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
 </head>
 <body>
-<div id="canvas">
+<div id="mouse-canvas">
   <h1>Crowded Cursors</h1>
 </div>
 </html>

@@ -18,7 +18,9 @@ function handler(request, response) {
 
 
 io.sockets.on('connection', function(socket) {
-  socket.emit('status', { message: 'You have connected' });
-
-
+  socket.emit('status', { message: 'You have connected', clid : socket.id });
+  socket.on('move', function(data) {
+    console.log(data);
+    socket.emit('move', data);
+  });
 });
