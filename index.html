@@ -80,7 +80,7 @@
         }
         socket.emit('move', data);
 
-        $("#user").css({
+        $("#mouse-user").css({
           'left' : e.pageX-15,
           'top' : e.pageY-15 
         });
@@ -90,7 +90,7 @@
     // Do a spin when the user clicks
     $(document).click(function() {
       socket.emit('spin');
-      spinCursor(mouse);
+      spinCursor('user');
     });
   </script>
   
@@ -124,7 +124,7 @@
       -moz-transition-duration: 0.1s, 0.1s, 0.5s;
     }
 
-    #user {
+    #mouse-user {
       background: blue;
       z-index: 100;
     }
@@ -140,6 +140,6 @@
   <div style="width: 960px; margin: 0 auto">
   <h1>Crowded Cursors</h1>
   </div>
-  <span id="user" class="mouse"></span>
+  <span id="mouse-user" class="mouse"></span>
 </div>
 </html>
