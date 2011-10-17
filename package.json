@@ -1,5 +1,7 @@
 {
   "name" : "crowded-cursors",
   "version" : "0.0.1",
-  "dependencies" : "socket.io"
+  "dependencies" : {
+    "socket.io" : ">=0.0.1"
+  }
 }
