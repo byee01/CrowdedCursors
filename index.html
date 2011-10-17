@@ -39,8 +39,8 @@
     });
 
     // Remove a mouse when a user disconnects
-    socket.on('close', function(id) {
-      $('#mouse-'+id).remove();
+    socket.on('close', function(data) {
+      $('#mouse-'+data).remove();
     });
 
     // Spinning function
