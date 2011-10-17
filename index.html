@@ -8,15 +8,49 @@
 
     // Set up socket.io
     var socket = io.connect();
+    
+    // The user's own mouse id
+    var mouse;
+
     socket.on('status', function(data) {
       console.log(data.message + " and have been assigned id " + data.clid);
+      mouse = data.clid;
     });
 
     // Handle mouse move events
     socket.on('move', function(data) {
+      // If the mouse isn't yet on the stage
+      if($('#mouse-'+data.id).length == 0) {
+        $('#mouse-canvas').append('<span class="mouse" id="mouse-'+data.id+'"></span>'); 
+      }
 
+      // Move the mouse using CSS
+      $('#mouse-'+data.id).css({
+        'left' : (($(window).width() - data.width) / 2 + data.x) + 'px',
+        'top' : data.y + 'px'
+      });
     });
 
+    // Do a little spin!
+    socket.on('spin', function(data) {
+      spinCursor(data);
+    });
+
+    // Remove a mouse when a user disconnects
+    socket.on('close', function(id) {
+      $('#mouse-'+id).remove();
+    });
+
+    // Spinning function
+    function spinCursor(id) {
+      window.setTimeout(function() {
+        $('#mouse-'+id).addClass('spin');
+      }, 0);
+      window.setTimeout(function() {
+        $('#mouse-'+id).removeClass('spin');
+      }, 250);
+    }
+    
     // Set up mouse tracking
     
     // We don't want to run mousemove constantly,
@@ -38,11 +72,18 @@
       ratelimit(function(e) {
         var data = {
           'x': e.pageX,
-          'y': e.pageY
+          'y': e.pageY,
+          'width' : $(window).width(),
+          'id': mouse
         }
         socket.emit('move', data);
-      }, 500)
+      }, 100)
     );
+
+    // Do a spin when the user clicks
+    $(document).click(function() {
+      socket.emit('spin');
+    });
   </script>
   
   <style type="text/css">
@@ -56,6 +97,22 @@
       background: #DDD;
       height: 100%;
       width: 100%;
+    }
+
+    .mouse {
+      position: absolute;
+      height: 30px;
+      width: 30px;
+      background: red;
+      -webkit-transition-property: top, left, -webkit-transform;
+      -webkit-transition-duration: 0.1s, 0.1s, 0.5s;
+      -moz-transition-property: top, left, -moz-transform;
+      -moz-transition-duration: 0.1s, 0.1s, 0.5s;
+    }
+
+    .spin {
+      -webkit-transform: rotateZ(360deg);
+      -moz-transform: rotateZ(360deg);
     }
   </style>
 </head>

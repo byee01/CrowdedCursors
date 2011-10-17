@@ -18,9 +18,24 @@ function handler(request, response) {
 
 
 io.sockets.on('connection', function(socket) {
+  
+  // Greet clients with a message and assign an id
   socket.emit('status', { message: 'You have connected', clid : socket.id });
+  
+  // When we receive a move event from a client send it to everyone else
   socket.on('move', function(data) {
-    console.log(data);
-    socket.emit('move', data);
+    // Broadcasting will send 'move' to every client except the one
+    // that originally sent it
+    socket.broadcast.emit('move', data);
+  });
+
+  // Send a fun spin event when a user tries to interact
+  socket.on('spin', function() {
+    socket.broadcast.emit('spin', socket.id);
+  });
+
+  // Remove the cursor when the user disconnects
+  socket.on('disconnect', function() {
+    socket.broadcast.emit('close', socket.id);
   });
 });
