@@ -43,9 +43,7 @@
 
     // Spinning function
     function spinCursor(id) {
-      window.setTimeout(function() {
-        $('#mouse-'+id).addClass('spin');
-      }, 0);
+      $('#mouse-'+id).addClass('spin');
       window.setTimeout(function() {
         $('#mouse-'+id).removeClass('spin');
       }, 250);
@@ -113,8 +111,8 @@
     }
 
     .spin {
-      -webkit-transform: rotateZ(360deg);
-      -moz-transform: rotateZ(360deg);
+      -webkit-transform: rotate(360deg);
+      -moz-transform: rotate(360deg);
     }
   </style>
 </head>
