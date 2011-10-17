@@ -20,15 +20,17 @@
     // Handle mouse move events
     socket.on('move', function(data) {
       // If the mouse isn't yet on the stage
-      if($('#mouse-'+data.id).length == 0) {
-        $('#mouse-canvas').append('<span class="mouse" id="mouse-'+data.id+'"></span>'); 
-      }
+      if(data.id) {
+        if($('#mouse-'+data.id).length == 0) {
+          $('#mouse-canvas').append('<span class="mouse" id="mouse-'+data.id+'"></span>'); 
+        }
 
-      // Move the mouse using CSS
-      $('#mouse-'+data.id).css({
-        'left' : (($(window).width() - data.width) / 2 + data.x) + 'px',
-        'top' : data.y + 'px'
-      });
+        // Move the mouse using CSS
+        $('#mouse-'+data.id).css({
+          'left' : (($(window).width() - data.width) / 2 + data.x) + 'px',
+          'top' : data.y + 'px'
+        });
+      }
     });
 
     // Do a little spin!
