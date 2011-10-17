@@ -27,7 +27,8 @@
 
         // Move the mouse using CSS
         $('#mouse-'+data.id).css({
-          'left' : (($(window).width() - data.width) / 2 + data.x) + 'px',
+          //'left' : (($(window).width() - data.width) / 2 + data.x) + 'px',
+          'left' : data.x + 'px',
           'top' : data.y + 'px'
         });
       }
@@ -70,23 +71,34 @@
     // Send the current mouse coordinates to the server
     $(document).mousemove(
       ratelimit(function(e) {
+        // Send mouse data to the server
         var data = {
-          'x': e.pageX,
-          'y': e.pageY,
+          'x': e.pageX-15,
+          'y': e.pageY-15,
           'width' : $(window).width(),
           'id': mouse
         }
         socket.emit('move', data);
+
+        $("#user").css({
+          'left' : e.pageX-15,
+          'top' : e.pageY-15 
+        });
       }, 100)
     );
 
     // Do a spin when the user clicks
     $(document).click(function() {
       socket.emit('spin');
+      spinCursor(mouse);
     });
   </script>
   
   <style type="text/css">
+    html {
+      background: #DDD;
+    }
+    
     body {
       margin: 0;
       padding: 0;
@@ -112,6 +124,11 @@
       -moz-transition-duration: 0.1s, 0.1s, 0.5s;
     }
 
+    #user {
+      background: blue;
+      z-index: 100;
+    }
+
     .spin {
       -webkit-transform: rotate(360deg);
       -moz-transform: rotate(360deg);
@@ -120,6 +137,9 @@
 </head>
 <body>
 <div id="mouse-canvas">
+  <div style="width: 960px; margin: 0 auto">
   <h1>Crowded Cursors</h1>
+  </div>
+  <span id="user" class="mouse"></span>
 </div>
 </html>
